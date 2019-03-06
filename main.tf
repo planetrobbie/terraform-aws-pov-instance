@@ -15,7 +15,7 @@ resource "aws_instance" "pov_instance" {
   ami               = "${var.ami_id}"
   instance_type     = "${var.instance_type}"
 
-  subnet_id         = "subnet-03d9b5176be0f546b"
+  subnet_id         = "${data.terraform_remote_state.vpc.vpc_id}"
 
   tags {
     Name = "${var.instance_tag}"
