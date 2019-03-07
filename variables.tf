@@ -21,3 +21,9 @@ variable "ami_id" {
   type        = "string"
   default     = "ami-38a01045"
 }
+
+variable "business_unit" {
+  description = "Business Unit tag to apply to EC2 instance for chargeback purpose"
+  type        = "string"
+  default     = "IT"
+}
