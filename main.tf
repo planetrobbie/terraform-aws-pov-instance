@@ -24,14 +24,24 @@ data "terraform_remote_state" "vpc" {
   }
 }
 
-resource "aws_instance" "pov_instance" {
-  ami           = "${var.ami_id}"
-  instance_type = "${var.instance_type}"
+data "terraform_remote_state" "sg" {
+  backend = "atlas"
 
-  subnet_id = "${element(data.terraform_remote_state.vpc.private_subnets, 0)}"
+  config {
+    name    = "yet/terraform-aws-pov-sg"
+    address = "https://replicated.yet.org"
+  }
+}
+
+resource "aws_instance" "pov_instance" {
+  ami                      = "${var.ami_id}"
+  instance_type            = "${var.instance_type}"
+
+  vpc_security_group_ids   = ["${data.terraform_remote_state.sg.sg_id}"]
+  subnet_id                = "${element(data.terraform_remote_state.vpc.private_subnets, 0)}"
 
   tags {
-    Name         = "${var.instance_tag}"
-    BusinessUnit = "${var.business_unit}"
+    Name                   = "${var.instance_tag}"
+    BusinessUnit           = "${var.business_unit}"
   }
 }
